@@ -12,6 +12,8 @@ return new class extends Migration {
     {
         Schema::create('ads', function (Blueprint $table) {
             $table->id();
+            // Not using the ad_id as a primary key as it is too large
+            $table->bigInteger('ad_id')->nullable()->index();
             $table->integer('impressions')->nullable();
             $table->integer('clicks')->nullable();
             $table->integer('unique_clicks')->nullable();

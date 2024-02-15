@@ -11,7 +11,7 @@ class AdController extends Controller
     public function index()
     {
         try {
-            $ads = Ad::orderBy('id')->get();
+            $ads = Ad::orderBy('impressions', 'desc')->get();
         } catch (Exception $e) {
             return response()->json([
                 "message" => $e->getMessage(),
@@ -24,7 +24,7 @@ class AdController extends Controller
     public function show($id)
     {
         try {
-            $ad = Ad::find($id);
+            $ad = Ad::firstWhere('ad_id', '=', $id);
         } catch (Exception $e) {
             return response()->json([
                 "message" => $e->getMessage(),
@@ -42,17 +42,18 @@ class AdController extends Controller
     public function paginate(Request $request)
     {
         $search = $request->query('search');
-        $perPage = $request->query('perPage', 20);
+        $perPage = $request->query('perPage', 15);
         $page = $request->query('page');
 
         if ($search) {
             // The query builder uses parameter binding so this should be safe from SQL injections
-            $page = Ad::where('id', 'LIKE', $search . '%')
-                ->orderBy('id')
-                ->paginate($perPage, ['*'], 'page', $page);
+            $page = Ad::where('ad_id', 'LIKE', $search . '%')
+                ->orderBy('impressions', 'desc')
+                ->paginate($perPage, ['ad_id', 'impressions', 'clicks', 'unique_clicks', 'leads', 'conversion', 'roi'], 'page', $page)
+                ->withPath('/api/ads/paginate?search=' . $search);
         } else {
-            $page = Ad::orderBy('id')
-                ->paginate($perPage, ['*'], 'page', $page);
+            $page = Ad::orderBy('impressions', 'desc')
+                ->paginate($perPage, ['ad_id', 'impressions', 'clicks', 'unique_clicks', 'leads', 'conversion', 'roi'], 'page', $page);
         }
         return response()->json($page);
 
