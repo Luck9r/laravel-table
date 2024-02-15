@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('ads', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('ad_id')->index()->nullable();
             $table->integer('impressions')->nullable();
             $table->integer('clicks')->nullable();
             $table->integer('unique_clicks')->nullable();

@@ -48,8 +48,11 @@ class FetchAds extends Command
         echo "Writing to the database...\n";
         try {
             foreach ($response1->json() as $ad) {
+                // If the id is not numeric, moving on to the next ad
+                if(!is_numeric($ad['name'])) continue;
+
                 $adRecord = new Ad;
-                $adRecord->ad_id = is_numeric($ad['name']) ? $ad['name'] : null;
+                $adRecord->id = $ad['name'];
                 $adRecord->clicks = is_numeric($ad['clicks']) ? $ad['clicks'] : null;
                 $adRecord->unique_clicks = is_numeric($ad['unique_clicks']) ? $ad['unique_clicks'] : null;
                 $adRecord->leads = is_numeric($ad['leads']) ? $ad['leads'] : null;
@@ -63,13 +66,14 @@ class FetchAds extends Command
         }
         try {
             foreach ($response2->json()['data']['list'] as $ad) {
-                $adRecord = Ad::where('ad_id', '=', $ad['dimensions']['ad_id'])->update([
+                $adRecord = Ad::where('id', '=', $ad['dimensions']['ad_id'])->update([
                     'conversion' => is_numeric($ad['metrics']['conversion']) ? $ad['metrics']['conversion'] : null,
                     'impressions' => is_numeric($ad['metrics']['impressions']) ? $ad['metrics']['impressions'] : null
                 ]);
-                if (!$adRecord) {
+                // Creating a new record if doesn't exist
+                if (!$adRecord && is_numeric($ad['dimensions']['ad_id'])) {
                     $adRecord = new Ad;
-                    $adRecord->ad_id = is_numeric($ad['dimensions']['ad_id']) ? $ad['dimensions']['ad_id'] : null;
+                    $adRecord->id = $ad['dimensions']['ad_id'];
                     $adRecord->conversion = is_numeric($ad['metrics']['conversion']) ? $ad['metrics']['conversion'] : null;
                     $adRecord->impressions = is_numeric($ad['metrics']['impressions']) ? $ad['metrics']['impressions'] : null;
                     $adRecord->save();
