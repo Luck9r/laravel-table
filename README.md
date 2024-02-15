@@ -1,5 +1,5 @@
 # Laravel Table
-Uses Laravel for the backend and the Materialize CSS framework with own javascript for the frontend.
+Uses Laravel for the backend and Materialize CSS framework with own javascript for the frontend.
 
 The frontend makes requests to the backend, which has three endpoints:
 ```bash
