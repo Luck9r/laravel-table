@@ -1,6 +1,17 @@
 # Laravel Table
+Uses Laravel for the backend and the Materialize CSS framework with own javascript for the frontend.
+
+The frontend makes requests to the backend, which has three endpoints:
+```bash
+/api/ads            # returns all ads ordered by impressions 
+/api/ads/find/{id}  # returns a single ad with a given ad_id
+/api/ads/paginate   # returns a list of ads, filtered and paginated
+```
+(For demonstration purposes, only the pagination endpoint is utilized in the App)
+
+The Database connection is implemented with Eloquent ORM for increased convenience and safety.
 ## Setup
-Project requires a running Mysql database (with default settings). In my case, it was set up using sail.
+Project requires a running MySQL database (with default settings). In my case, it was set up using sail.
 ### Node
 Node dependencies need to be installed:
 ```bash
